@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Amatory Word Cloud · Iliad glosses</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Cormorant+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#221f1a;
+    --parchment:#e9e2cd;
+    --parchment-2:#ddd3b6;
+    --rubric:#8c3a2b;
+    --verdigris:#5f7d63;
+    --gold:#a9832f;
+    --line: rgba(34,31,26,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--parchment);
+    background-image: radial-gradient(rgba(34,31,26,0.05) 1px, transparent 1px);
+    background-size: 3px 3px;
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    font-size:19px;
+    line-height:1.5;
+  }
+  header{
+    max-width:960px;
+    margin:0 auto;
+    padding:64px 24px 32px;
+    border-bottom:2px solid var(--ink);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--verdigris);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:'Cormorant SC', serif;
+    font-weight:700;
+    font-size:50px;
+    letter-spacing:0.02em;
+    color:var(--rubric);
+    margin:0 0 8px;
+  }
+  .subtitle{
+    font-style:italic;
+    color:#4a453b;
+    margin:0 0 22px;
+    max-width:66ch;
+  }
+  .subtitle code{
+    font-family:'JetBrains Mono', monospace;
+    font-style:normal;
+    font-size:14px;
+    background:var(--parchment-2);
+    padding:1px 5px;
+  }
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px 28px;
+    align-items:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+  }
+  button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    background:var(--parchment-2);
+    border:1px solid var(--ink);
+    color:var(--ink);
+    padding:6px 10px;
+    cursor:pointer;
+  }
+  button:hover{ background:var(--gold); color:var(--parchment);}
+  #status{ color:var(--verdigris); }
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:24px 24px 100px;
+  }
+  #cloudWrap{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.15);
+    margin-bottom:28px;
+  }
+  #cloudSvg text{
+    cursor:default;
+  }
+  #cloudSvg text:hover{
+    opacity:0.65;
+  }
+  details{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  summary{
+    cursor:pointer;
+    color:var(--verdigris);
+    margin-bottom:10px;
+  }
+  .entry{
+    padding:10px 0;
+    border-bottom:1px dotted var(--line);
+    font-family:'EB Garamond', serif;
+    font-size:16px;
+  }
+  .entry .lemma{ font-style:italic; color:#4a453b; }
+  .entry .meta{ color:#5c5647; font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:4px;}
+  .entry a{ color:var(--rubric); }
+  .empty, .error{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    color:var(--rubric);
+    padding:30px 0;
+  }
+  #tokenChip{
+    position:fixed; right:18px; bottom:18px; z-index:20;
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    background:var(--ink); color:var(--parchment);
+    border:1px solid var(--gold); padding:7px 12px;
+    cursor:pointer; user-select:none;
+    box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  }
+  #tokenChip:hover{ background:var(--rubric); }
+  #tokenChip.set{ border-color:var(--verdigris); }
+</style>
+</head>
+<body>
+
+<div id="tokenChip" title="click: set/update your personal API token · double-click: hide until reload">🔑 token</div>
+
+<header>
+  <p class="eyebrow">Filtered corpus &middot; Hypothes.is</p>
+  <h1>Amatory Word Cloud</h1>
+  <p class="subtitle">Annotations from <code>cophi.github.io/iliad-translations/iliad-eng.html</code>, filtered by the tag <code>amatory</code> &mdash; word size scaled to frequency across the gloss texts.</p>
+  <div class="controls">
+    <span id="status">ready to query the API…</span>
+    <button id="reload">↻ reload</button>
+  </div>
+</header>
+
+<main id="main">
+  <p class="empty">Loading annotations…</p>
+</main>
+
+<script>
+const GROUP_ID = "PmBAzYRr";
+const API = "https://api.hypothes.is/api/search";
+const PAGE_SIZE = 200;
+const TOKEN_KEY = "hypothesis_api_token_iliad";
+const TARGET_URI = "https://cophi.github.io/iliad-translations/iliad-eng.html";
+const TARGET_TAG = "amatory";
+
+const STOPWORDS = new Set(("a about above after again against all am an and any are aren't as at be because been before being below between both but by can't cannot could couldn't did didn't do does doesn't doing don't down during each few for from further had hadn't has hasn't have haven't having he he'd he'll he's her here here's hers herself him himself his how how's i i'd i'll i'm i've if in into is isn't it it's its itself let's me more most mustn't my myself no nor not of off on once only or other ought our ours ourselves out over own same shan't she she'd she'll she's should shouldn't so some such than that that's the their theirs them themselves then there there's these they they'd they'll they're they've this those through to too under until up very was wasn't we we'd we'll we're we've were weren't what what's when when's where where's which while who who's whom why why's with won't would wouldn't you you'd you'll you're you've your yours yourself yourselves also one two upon thou thy thee ye o").split(/\s+/));
+
+const mainEl = document.getElementById('main');
+const statusEl = document.getElementById('status');
+const tokenChip = document.getElementById('tokenChip');
+
+function getToken(){ return localStorage.getItem(TOKEN_KEY) || ''; }
+function refreshChip(){
+  tokenChip.classList.toggle('set', !!getToken());
+  tokenChip.textContent = getToken() ? '🔑 token set' : '🔑 token';
+}
+tokenChip.addEventListener('click', () => {
+  const current = getToken();
+  const val = prompt(
+    "Paste your personal Hypothes.is API token here\n" +
+    "(Profile → Developer → Generate API token).\n" +
+    "It stays only in this browser (localStorage), never sent anywhere\n" +
+    "except in the Authorization header to api.hypothes.is.\n" +
+    "Leave empty and confirm to remove it.",
+    current
+  );
+  if(val === null) return;
+  if(val.trim() === '') localStorage.removeItem(TOKEN_KEY);
+  else localStorage.setItem(TOKEN_KEY, val.trim());
+  refreshChip();
+  load();
+});
+tokenChip.addEventListener('dblclick', (e) => { e.stopPropagation(); tokenChip.style.display = 'none'; });
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function fetchFiltered(){
+  let offset = 0, all = [], total = Infinity;
+  const token = getToken();
+  const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+  while (offset < total && offset < 5000){
+    const url = `${API}?group=${GROUP_ID}&uri=${encodeURIComponent(TARGET_URI)}&tag=${encodeURIComponent(TARGET_TAG)}&limit=${PAGE_SIZE}&offset=${offset}&_separate_replies=false`;
+    const res = await fetch(url, { headers });
+    if(res.status === 401 || res.status === 403){
+      throw new Error(`access denied (HTTP ${res.status}) — the group is private: set a valid token with the 🔑 chip in the bottom right`);
+    }
+    if(!res.ok) throw new Error(`request failed: HTTP ${res.status}`);
+    const data = await res.json();
+    total = data.total ?? data.rows.length;
+    all = all.concat(data.rows || []);
+    if(!data.rows || data.rows.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+    statusEl.textContent = `fetched ${all.length} of ${total} matching annotations…`;
+  }
+  // double filter client-side for safety
+  return all.filter(a => a.uri === TARGET_URI && (a.tags || []).includes(TARGET_TAG));
+}
+
+function buildFrequencies(annotations){
+  const freq = new Map();
+  for(const ann of annotations){
+    const text = (ann.text || '').toLowerCase();
+    const words = text.match(/[a-z']+/g) || [];
+    for(let w of words){
+      w = w.replace(/^'+|'+$/g,'');
+      if(w.length < 3) continue;
+      if(STOPWORDS.has(w)) continue;
+      freq.set(w, (freq.get(w) || 0) + 1);
+    }
+  }
+  return freq;
+}
+
+function rectsOverlap(a, b){
+  return !(a.x1 < b.x0 || a.x0 > b.x1 || a.y1 < b.y0 || a.y0 > b.y1);
+}
+
+async function renderCloud(freq, container){
+  const W = 920, H = 560, cx = W/2, cy = H/2;
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("id", "cloudSvg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", "100%");
+  container.innerHTML = '';
+  container.appendChild(svg);
+
+  const entries = [...freq.entries()].sort((a,b) => b[1]-a[1]);
+  if(entries.length === 0) return 0;
+
+  const maxFreq = entries[0][1];
+  const minFreq = entries[entries.length-1][1];
+  const minSize = 15, maxSize = 92;
+
+  await document.fonts.ready;
+
+  const placed = [];
+  let placedCount = 0;
+
+  entries.forEach(([word, count], idx) => {
+    const t = maxFreq === minFreq ? 1 : Math.sqrt((count - minFreq) / (maxFreq - minFreq));
+    const size = minSize + (maxSize - minSize) * t;
+    const tier = idx === 0 ? 0 : idx < 5 ? 1 : idx < 15 ? 2 : 3;
+    const color = [ "var(--rubric)", "var(--gold)", "var(--verdigris)", "var(--ink)" ][tier];
+    const family = tier <= 2 ? "'Cormorant SC', serif" : "'EB Garamond', serif";
+    const weight = tier === 0 ? 700 : tier <= 2 ? 600 : 400;
+    const fontStyle = tier === 3 ? "italic" : "normal";
+
+    const textEl = document.createElementNS(svgNS, "text");
+    textEl.textContent = word;
+    textEl.setAttribute("font-size", size);
+    textEl.setAttribute("font-family", family);
+    textEl.setAttribute("font-weight", weight);
+    textEl.setAttribute("font-style", fontStyle);
+    textEl.setAttribute("fill", color);
+    textEl.setAttribute("opacity", "0");
+    textEl.setAttribute("text-anchor", "middle");
+    textEl.setAttribute("dominant-baseline", "middle");
+    svg.appendChild(textEl);
+
+    const bbox = textEl.getBBox();
+    const padding = 3;
+    const halfW = bbox.width/2 + padding, halfH = bbox.height/2 + padding;
+
+    let placedOk = false;
+    let x = cx, y = cy;
+    const maxAttempts = 2200;
+    for(let i = 0; i < maxAttempts; i++){
+      const theta = 0.35 * i;
+      const r = 2.6 * theta;
+      x = cx + r * Math.cos(theta);
+      y = cy + r * Math.sin(theta);
+      const cand = { x0: x-halfW, x1: x+halfW, y0: y-halfH, y1: y+halfH };
+      if(cand.x0 < 4 || cand.x1 > W-4 || cand.y0 < 4 || cand.y1 > H-4){ continue; }
+      let ok = true;
+      for(const p of placed){ if(rectsOverlap(cand, p)){ ok = false; break; } }
+      if(ok){ placed.push(cand); placedOk = true; break; }
+    }
+
+    if(placedOk){
+      textEl.setAttribute("x", x);
+      textEl.setAttribute("y", y);
+      textEl.setAttribute("opacity", "1");
+      const title = document.createElementNS(svgNS, "title");
+      title.textContent = `${word} — ${count}×`;
+      textEl.appendChild(title);
+      placedCount++;
+    } else {
+      svg.removeChild(textEl);
+    }
+  });
+
+  return placedCount;
+}
+
+function renderList(annotations, container){
+  const details = document.createElement('details');
+  const summary = document.createElement('summary');
+  summary.textContent = `show the ${annotations.length} underlying annotations`;
+  details.appendChild(summary);
+  for(const ann of annotations){
+    const target = (ann.target && ann.target[0]) || {};
+    const tq = (target.selector || []).find(s => s.type === 'TextQuoteSelector');
+    const quote = tq ? tq.exact : '';
+    const user = (ann.user || '').replace('acct:','').split('@')[0];
+    const link = (ann.links && (ann.links.incontext || ann.links.html)) || '#';
+    const div = document.createElement('div');
+    div.className = 'entry';
+    div.innerHTML = `
+      ${quote ? `<div class="lemma">&laquo;${escapeHtml(quote)}&raquo;</div>` : ''}
+      <div>${escapeHtml(ann.text || '(no gloss text)')}</div>
+      <div class="meta"><strong>${escapeHtml(user)}</strong> &middot; <a href="${link}" target="_blank" rel="noopener">open ↗</a></div>`;
+    details.appendChild(div);
+  }
+  container.appendChild(details);
+}
+
+async function load(){
+  mainEl.innerHTML = '<p class="empty">Loading annotations…</p>';
+  statusEl.textContent = 'querying the API…';
+  try{
+    const annotations = await fetchFiltered();
+    if(annotations.length === 0){
+      mainEl.innerHTML = '<p class="empty">No annotations found for this URI + tag combination.</p>';
+      statusEl.textContent = 'no data.';
+      return;
+    }
+    const freq = buildFrequencies(annotations);
+
+    mainEl.innerHTML = '';
+    const cloudWrap = document.createElement('div');
+    cloudWrap.id = 'cloudWrap';
+    mainEl.appendChild(cloudWrap);
+
+    const placedCount = await renderCloud(freq, cloudWrap);
+    renderList(annotations, mainEl);
+
+    statusEl.textContent = `${annotations.length} annotations · ${freq.size} unique words · ${placedCount} placed in the cloud.`;
+  }catch(err){
+    mainEl.innerHTML = `<p class="error">Error: ${escapeHtml(err.message)}</p>`;
+    statusEl.textContent = 'error.';
+  }
+}
+
+document.getElementById('reload').addEventListener('click', load);
+refreshChip();
+load();
+</script>
+
+</body>
+</html>
