@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Glosses on the Iliad · Hypothes.is group</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Cormorant+SC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#221f1a;
+    --parchment:#e9e2cd;
+    --parchment-2:#ddd3b6;
+    --rubric:#8c3a2b;
+    --verdigris:#5f7d63;
+    --gold:#a9832f;
+    --line: rgba(34,31,26,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--parchment);
+    background-image:
+      radial-gradient(rgba(34,31,26,0.05) 1px, transparent 1px);
+    background-size: 3px 3px;
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    font-size:19px;
+    line-height:1.5;
+  }
+  header{
+    max-width:900px;
+    margin:0 auto;
+    padding:64px 24px 32px;
+    border-bottom:2px solid var(--ink);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--verdigris);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:'Cormorant SC', serif;
+    font-weight:700;
+    font-size:52px;
+    letter-spacing:0.02em;
+    color:var(--rubric);
+    margin:0 0 8px;
+  }
+  .subtitle{
+    font-style:italic;
+    color:#4a453b;
+    margin:0 0 22px;
+    max-width:60ch;
+  }
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px 28px;
+    align-items:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+  }
+  .controls label{ color:#4a453b; margin-right:8px;}
+  select, button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    background:var(--parchment-2);
+    border:1px solid var(--ink);
+    color:var(--ink);
+    padding:6px 10px;
+    cursor:pointer;
+  }
+  button:hover, select:hover{ background:var(--gold); color:var(--parchment);}
+  #status{ color:var(--verdigris); }
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:8px 24px 100px;
+  }
+  .letter-index{
+    position:sticky;
+    top:0;
+    background:var(--parchment);
+    border-bottom:1px solid var(--line);
+    padding:14px 0 6px;
+    font-family:'Cormorant SC', serif;
+    font-weight:700;
+    font-size:22px;
+    color:var(--rubric);
+    z-index:5;
+  }
+  .entry{
+    display:grid;
+    grid-template-columns:52px 1fr;
+    gap:0 18px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .initial{
+    font-family:'Cormorant SC', serif;
+    font-weight:700;
+    font-size:38px;
+    color:var(--gold);
+    line-height:1;
+    padding-top:2px;
+  }
+  .lemma{
+    font-style:italic;
+    color:var(--ink);
+    font-size:19px;
+    border-left:3px solid var(--verdigris);
+    padding-left:12px;
+    margin-bottom:8px;
+  }
+  .gloss{
+    color:var(--ink);
+    white-space:pre-wrap;
+  }
+  .meta{
+    margin-top:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:#5c5647;
+  }
+  .meta a{ color:var(--rubric); text-decoration:none; border-bottom:1px dotted var(--rubric);}
+  .tag{
+    background:var(--parchment-2);
+    padding:1px 7px;
+    border:1px solid var(--line);
+  }
+  .empty, .error{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    color:var(--rubric);
+    padding:40px 0;
+  }
+  ::selection{ background:var(--gold); color:var(--parchment); }
+
+  #tokenChip{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    z-index:20;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:var(--ink);
+    color:var(--parchment);
+    border:1px solid var(--gold);
+    padding:7px 12px;
+    cursor:pointer;
+    user-select:none;
+    box-shadow:0 2px 6px rgba(0,0,0,0.25);
+  }
+  #tokenChip:hover{ background:var(--rubric); }
+  #tokenChip.set{ border-color:var(--verdigris); }
+</style>
+</head>
+<body>
+
+<div id="tokenChip" title="click: set/update your personal API token · double-click: hide until reload">🔑 token</div>
+
+<header>
+  <p class="eyebrow">Apparatus glossarum &middot; Hypothes.is</p>
+  <h1>Glosses on the Iliad</h1>
+  <p class="subtitle">Alphabetical index of the annotations gathered in the <em>Iliad</em> group, queried live through the Hypothes.is API.</p>
+  <div class="controls">
+    <span id="status">ready to query the API…</span>
+    <div>
+      <label for="sortField">sort by</label>
+      <select id="sortField">
+        <option value="text">gloss text</option>
+        <option value="quote">quoted lemma</option>
+        <option value="user">annotator</option>
+      </select>
+    </div>
+    <button id="reload">↻ reload</button>
+  </div>
+</header>
+
+<main id="main">
+  <p class="empty">Loading annotations…</p>
+</main>
+
+<script>
+const GROUP_ID = "PmBAzYRr";
+const API = "https://api.hypothes.is/api/search";
+const PAGE_SIZE = 200;
+const TOKEN_KEY = "hypothesis_api_token_iliad";
+
+const mainEl = document.getElementById('main');
+const statusEl = document.getElementById('status');
+const sortSelect = document.getElementById('sortField');
+const tokenChip = document.getElementById('tokenChip');
+
+let annotations = [];
+
+function getToken(){
+  return localStorage.getItem(TOKEN_KEY) || '';
+}
+
+function refreshChip(){
+  tokenChip.classList.toggle('set', !!getToken());
+  tokenChip.textContent = getToken() ? '🔑 token set' : '🔑 token';
+}
+
+tokenChip.addEventListener('click', () => {
+  const current = getToken();
+  const val = prompt(
+    "Paste your personal Hypothes.is API token here\n" +
+    "(Profile → Developer → Generate API token).\n" +
+    "It stays only in this browser (localStorage), never sent anywhere\n" +
+    "except in the Authorization header to api.hypothes.is.\n" +
+    "Leave empty and confirm to remove it.",
+    current
+  );
+  if(val === null) return; // cancelled
+  if(val.trim() === ''){
+    localStorage.removeItem(TOKEN_KEY);
+  } else {
+    localStorage.setItem(TOKEN_KEY, val.trim());
+  }
+  refreshChip();
+  load();
+});
+
+tokenChip.addEventListener('dblclick', (e) => {
+  e.stopPropagation();
+  tokenChip.style.display = 'none';
+});
+
+async function fetchAllAnnotations(){
+  let offset = 0;
+  let all = [];
+  let total = Infinity;
+  const token = getToken();
+  const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+  while (offset < total && offset < 5000){
+    const url = `${API}?group=${GROUP_ID}&limit=${PAGE_SIZE}&offset=${offset}&_separate_replies=false`;
+    const res = await fetch(url, { headers });
+    if(res.status === 401 || res.status === 403){
+      throw new Error(`access denied (HTTP ${res.status}) — the group is private: set a valid token with the 🔑 chip in the bottom right`);
+    }
+    if(!res.ok){
+      throw new Error(`request failed: HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    total = data.total ?? data.rows.length;
+    all = all.concat(data.rows || []);
+    if(!data.rows || data.rows.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+    statusEl.textContent = `fetched ${all.length} of ${total} annotations…`;
+  }
+  return all;
+}
+
+function extractQuote(ann){
+  const target = (ann.target && ann.target[0]) || {};
+  const selectors = target.selector || [];
+  const tq = selectors.find(s => s.type === 'TextQuoteSelector');
+  return tq ? tq.exact : '';
+}
+
+function sortKeyFor(ann, field){
+  if(field === 'quote') return (extractQuote(ann) || '').toLowerCase();
+  if(field === 'user') return (ann.user || '').replace('acct:','').split('@')[0].toLowerCase();
+  return (ann.text || extractQuote(ann) || '').toLowerCase();
+}
+
+function render(){
+  const field = sortSelect.value;
+  const sorted = [...annotations].sort((a,b) => {
+    const ka = sortKeyFor(a, field), kb = sortKeyFor(b, field);
+    return ka.localeCompare(kb, 'en');
+  });
+
+  if(sorted.length === 0){
+    mainEl.innerHTML = '<p class="empty">No annotations found in this group.</p>';
+    return;
+  }
+
+  let html = '';
+  let lastLetter = null;
+  for(const ann of sorted){
+    const key = sortKeyFor(ann, field);
+    const letter = (key.trim()[0] || '#').toUpperCase();
+    if(letter !== lastLetter){
+      html += `<div class="letter-index">${letter}</div>`;
+      lastLetter = letter;
+    }
+    const quote = extractQuote(ann);
+    const user = (ann.user || '').replace('acct:','').split('@')[0];
+    const date = ann.created ? new Date(ann.created).toLocaleDateString('en-GB') : '';
+    const tags = (ann.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join(' ');
+    const link = (ann.links && (ann.links.incontext || ann.links.html)) || '#';
+    const uriTitle = (ann.document && ann.document.title && ann.document.title[0]) || ann.uri || '';
+
+    html += `
+      <div class="entry">
+        <div class="initial">${letter}</div>
+        <div>
+          ${quote ? `<div class="lemma">&laquo;${escapeHtml(quote)}&raquo;</div>` : ''}
+          <div class="gloss">${escapeHtml(ann.text || '(no gloss text)')}</div>
+          <div class="meta">
+            <span>annotator: <strong>${escapeHtml(user)}</strong></span>
+            <span>${date}</span>
+            ${uriTitle ? `<span>source: ${escapeHtml(uriTitle)}</span>` : ''}
+            <a href="${link}" target="_blank" rel="noopener">open on Hypothes.is ↗</a>
+            ${tags}
+          </div>
+        </div>
+      </div>`;
+  }
+  mainEl.innerHTML = html;
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+async function load(){
+  mainEl.innerHTML = '<p class="empty">Loading annotations…</p>';
+  statusEl.textContent = 'querying the API…';
+  try{
+    annotations = await fetchAllAnnotations();
+    statusEl.textContent = `${annotations.length} annotations fetched from the Iliad group.`;
+    render();
+  }catch(err){
+    mainEl.innerHTML = `<p class="error">Error fetching annotations: ${escapeHtml(err.message)}</p>`;
+    statusEl.textContent = 'error.';
+  }
+}
+
+sortSelect.addEventListener('change', render);
+document.getElementById('reload').addEventListener('click', load);
+
+refreshChip();
+load();
+</script>
+
+</body>
+</html>
