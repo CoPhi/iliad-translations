@@ -193,11 +193,11 @@ const BASE = "https://cophi.github.io/iliad-translations/";
 // Five text layers, mapped 1:1 onto the fluo PALETTE of hypothesis-cat-color.js
 // (same hue, desaturated S=0.55 / L=0.34 for readability on parchment).
 const CATEGORIES = {
-  eng:        { label: "Pope’s Eng",     color: "rgb(54, 134, 39)"  },
-  tuscanSrc:  { label: "Tuscan (src)",    color: "rgb(134, 87, 39)"  },
-  tuscanEng:  { label: "Tusc→Eng trot",   color: "rgb(134, 39, 98)"  },
-  venSrc:     { label: "Venetian (src)",  color: "rgb(134, 134, 39)" },
-  venEng:     { label: "Ven→Eng trot",    color: "rgb(39, 134, 134)" },
+  eng:        { label: "Pope’s Eng",     color: "rgb(44, 124, 29)"  },
+  tuscanSrc:  { label: "Tuscan (src)",    color: "rgb(124, 76, 29)"  },
+  tuscanEng:  { label: "Tusc→Eng trot",   color: "rgb(124, 29, 87)"  },
+  venSrc:     { label: "Venetian (src)",  color: "rgb(124, 124, 29)" },
+  venEng:     { label: "Ven→Eng trot",    color: "rgb(29, 124, 124)" },
   unclassified:{ label: "unclassified",  color: "#8a8168" }
 };
 
@@ -358,8 +358,7 @@ async function renderCloud(freqByCategory, container){
   if(entries.length === 0) return 0;
 
   const maxFreq = entries[0].count;
-  const minFreq = entries[entries.length-1].count;
-  const minSize = 13, maxSize = 80;
+  const minSize = 22, maxSize = 78;
 
   await document.fonts.ready;
 
@@ -367,7 +366,9 @@ async function renderCloud(freqByCategory, container){
   let placedCount = 0;
 
   entries.forEach(({word, count, category}, idx) => {
-    const t = maxFreq === minFreq ? 1 : Math.sqrt((count - minFreq) / (maxFreq - minFreq));
+    // Proportional to sqrt(count)/sqrt(maxFreq): a single occurrence stays
+    // legible instead of being crushed toward minSize by a min–max rescale.
+    const t = Math.sqrt(count) / Math.sqrt(maxFreq);
     const size = minSize + (maxSize - minSize) * t;
     const rankTier = idx === 0 ? 0 : idx < 8 ? 1 : idx < 24 ? 2 : 3;
     const color = (CATEGORIES[category] || CATEGORIES.unclassified).color;
