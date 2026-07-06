@@ -55,12 +55,12 @@
   );
 
   const PALETTE = [
-    { name: "fluo yellow",  hex: "#FFFF33" },
-    { name: "fluo orange", hex: "#FF9933" },
-    { name: "fluo green",   hex: "#39FF14" },
-    { name: "fluo cyan", hex: "#00FFFF" },
-    { name: "fluo pink",    hex: "#FF6EC7" },
-    { name: "fluo purple",   hex: "#BF00FF" },
+    { name: "Ca.’s Venetian",  hex: "#FFFF33" },
+    { name: "Ca.’s Tuscan", hex: "#FF9933" },
+    { name: "Pope’s Eng",   hex: "#39FF14" },
+    { name: "Ven2Eng Transl.", hex: "#00FFFF" },
+    { name: "Tusc2Eng Transl.",    hex: "#FF6EC7" },
+    { name: "Free Note",   hex: "#BF00FF" },
   ];
 
   const HL_SEL = "hypothesis-highlight, .hypothesis-highlight";
