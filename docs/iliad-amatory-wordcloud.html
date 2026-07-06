@@ -193,11 +193,11 @@ const BASE = "https://cophi.github.io/iliad-translations/";
 // Five text layers, mapped 1:1 onto the fluo PALETTE of hypothesis-cat-color.js
 // (same hue, desaturated S=0.55 / L=0.34 for readability on parchment).
 const CATEGORIES = {
-  eng:        { label: "Pope’s Eng",     color: "rgb(44, 124, 29)"  },
-  tuscanSrc:  { label: "Tuscan (src)",    color: "rgb(124, 76, 29)"  },
-  tuscanEng:  { label: "Tusc→Eng trot",   color: "rgb(124, 29, 87)"  },
-  venSrc:     { label: "Venetian (src)",  color: "rgb(124, 124, 29)" },
-  venEng:     { label: "Ven→Eng trot",    color: "rgb(29, 124, 124)" },
+  eng:        { label: "Pope’s Eng",     color: "rgb(35, 156, 13)"  },
+  tuscanSrc:  { label: "Tuscan (src)",    color: "rgb(156, 84, 13)"  },
+  tuscanEng:  { label: "Tusc→Eng trot",   color: "rgb(156, 13, 100)" },
+  venSrc:     { label: "Venetian (src)",  color: "rgb(156, 156, 13)" },
+  venEng:     { label: "Ven→Eng trot",    color: "rgb(13, 156, 156)" },
   unclassified:{ label: "unclassified",  color: "#8a8168" }
 };
 
@@ -357,8 +357,17 @@ async function renderCloud(freqByCategory, container){
   entries.sort((a,b) => b.count - a.count);
   if(entries.length === 0) return 0;
 
-  const maxFreq = entries[0].count;
-  const minSize = 22, maxSize = 78;
+  // Star-magnitude-style scale: size depends on an ABSOLUTE reference
+  // count, not on this dataset's max — so a word's size never shifts
+  // just because some other word elsewhere reaches a new high (and a
+  // word far above the reference gets a "negative magnitude", i.e. an
+  // even bigger size, exactly like Sirius among the stars).
+  //   m(c) = -2.5 · log10(c / MAG_REF)      (magnitude; brighter = smaller/negative)
+  //   size(c) = clamp(MAG_BASE_SIZE - MAG_SCALE · m(c), MIN_SIZE, MAX_SIZE)
+  const MAG_REF = 2;       // occurrence count defining magnitude 0
+  const MAG_BASE_SIZE = 26; // font-size (px) at magnitude 0
+  const MAG_SCALE = 9;      // px per magnitude unit
+  const MIN_SIZE = 15, MAX_SIZE = 60;
 
   await document.fonts.ready;
 
@@ -366,13 +375,11 @@ async function renderCloud(freqByCategory, container){
   let placedCount = 0;
 
   entries.forEach(({word, count, category}, idx) => {
-    // Proportional to sqrt(count)/sqrt(maxFreq): a single occurrence stays
-    // legible instead of being crushed toward minSize by a min–max rescale.
-    const t = Math.sqrt(count) / Math.sqrt(maxFreq);
-    const size = minSize + (maxSize - minSize) * t;
+    const magnitude = -2.5 * Math.log10(count / MAG_REF);
+    const size = Math.min(MAX_SIZE, Math.max(MIN_SIZE, MAG_BASE_SIZE - MAG_SCALE * magnitude));
     const rankTier = idx === 0 ? 0 : idx < 8 ? 1 : idx < 24 ? 2 : 3;
     const color = (CATEGORIES[category] || CATEGORIES.unclassified).color;
-    const family = rankTier <= 1 ? "'Cormorant SC', serif" : "'EB Garamond', serif";
+    const family = "'EB Garamond', serif";
     const weight = rankTier === 0 ? 700 : rankTier === 1 ? 600 : 400;
     const fontStyle = rankTier === 3 ? "italic" : "normal";
 
