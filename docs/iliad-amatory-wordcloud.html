@@ -321,9 +321,9 @@ function buildFrequencies(categorized){
     if(!freq.has(category)) freq.set(category, new Map());
     const m = freq.get(category);
     const text = (ann.text || '').toLowerCase();
-    const words = text.match(/[a-z']+/g) || [];
+    const words = text.match(/[\p{L}'’]+/gu) || [];
     for(let w of words){
-      w = w.replace(/^'+|'+$/g,'');
+      w = w.replace(/^['’]+|['’]+$/g,'');
       if(w.length < 3) continue;
       if(STOPWORDS.has(w)) continue;
       m.set(w, (m.get(w) || 0) + 1);
