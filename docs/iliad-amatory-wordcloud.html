@@ -142,6 +142,14 @@
   .sitenav a{ color:#8a8168; text-decoration:none; }
   .sitenav a:hover{ color:var(--rubric); text-decoration:underline; }
   .sitenav a[aria-current="page"]{ color:var(--rubric); font-weight:600; pointer-events:none; }
+  .legend{
+    display:flex; flex-wrap:wrap; gap:10px 20px;
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    margin-top:16px; padding-top:14px; border-top:1px solid var(--line);
+  }
+  .legend .item{ display:flex; align-items:center; gap:6px; }
+  .legend .dot{ width:11px; height:11px; border-radius:50%; border:1px solid rgba(0,0,0,.25); flex:none; }
+  .legend .unclassified .dot{ background:#8a8168 !important; }
 </style>
 </head>
 <body>
@@ -161,13 +169,14 @@
 </nav>
 
 <header>
-  <p class="eyebrow">Filtered corpus &middot; Hypothes.is</p>
+  <p class="eyebrow">Full corpus &middot; Hypothes.is</p>
   <h1>Amatory Word Cloud</h1>
-  <p class="subtitle">Annotations from <code>cophi.github.io/iliad-translations/iliad-eng.html</code>, filtered by the tag <code>amatory</code> &mdash; word size scaled to frequency across the gloss texts.</p>
+  <p class="subtitle">All annotations (any tag) across the three Iliad 14 sources &mdash; each word colored by the text layer it glosses, sized by frequency within that layer.</p>
   <div class="controls">
     <span id="status">ready to query the API…</span>
     <button id="reload">↻ reload</button>
   </div>
+  <div class="legend" id="legend"></div>
 </header>
 
 <main id="main">
@@ -179,14 +188,35 @@ const GROUP_ID = "PmBAzYRr";
 const API = "https://api.hypothes.is/api/search";
 const PAGE_SIZE = 200;
 const TOKEN_KEY = "hypothesis_api_token_iliad";
-const TARGET_URI = "https://cophi.github.io/iliad-translations/iliad-eng.html";
-const TARGET_TAG = "amatory";
+const BASE = "https://cophi.github.io/iliad-translations/";
+
+// Five text layers, mapped 1:1 onto the fluo PALETTE of hypothesis-cat-color.js
+// (same hue, desaturated S=0.55 / L=0.34 for readability on parchment).
+const CATEGORIES = {
+  eng:        { label: "Pope’s Eng",     color: "rgb(54, 134, 39)"  },
+  tuscanSrc:  { label: "Tuscan (src)",    color: "rgb(134, 87, 39)"  },
+  tuscanEng:  { label: "Tusc→Eng trot",   color: "rgb(134, 39, 98)"  },
+  venSrc:     { label: "Venetian (src)",  color: "rgb(134, 134, 39)" },
+  venEng:     { label: "Ven→Eng trot",    color: "rgb(39, 134, 134)" },
+  unclassified:{ label: "unclassified",  color: "#8a8168" }
+};
+
+// Sources to query. Single-column sources map straight to one category;
+// two-column (parallel) sources need per-annotation classification via
+// the RangeSelector XPath: td[2] = original-language column (src),
+// td[3] = English trot column (eng).
+const SOURCES = [
+  { uri: BASE + "iliad-eng.html", fixedCategory: "eng" },
+  { uri: BASE + "tuscan-english-parallel.html", srcCategory: "tuscanSrc", engCategory: "tuscanEng" },
+  { uri: BASE + "venetian-english-parallel.html", srcCategory: "venSrc", engCategory: "venEng" },
+];
 
 const STOPWORDS = new Set(("a about above after again against all am an and any are aren't as at be because been before being below between both but by can't cannot could couldn't did didn't do does doesn't doing don't down during each few for from further had hadn't has hasn't have haven't having he he'd he'll he's her here here's hers herself him himself his how how's i i'd i'll i'm i've if in into is isn't it it's its itself let's me more most mustn't my myself no nor not of off on once only or other ought our ours ourselves out over own same shan't she she'd she'll she's should shouldn't so some such than that that's the their theirs them themselves then there there's these they they'd they'll they're they've this those through to too under until up very was wasn't we we'd we'll we're we've were weren't what what's when when's where where's which while who who's whom why why's with won't would wouldn't you you'd you'll you're you've your yours yourself yourselves also one two upon thou thy thee ye o").split(/\s+/));
 
 const mainEl = document.getElementById('main');
 const statusEl = document.getElementById('status');
 const tokenChip = document.getElementById('tokenChip');
+const legendEl = document.getElementById('legend');
 
 function getToken(){ return localStorage.getItem(TOKEN_KEY) || ''; }
 function refreshChip(){
@@ -215,12 +245,29 @@ function escapeHtml(str){
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-async function fetchFiltered(){
+function renderLegend(){
+  legendEl.innerHTML = '';
+  for(const key of ["eng","tuscanSrc","tuscanEng","venSrc","venEng","unclassified"]){
+    const cat = CATEGORIES[key];
+    const item = document.createElement('span');
+    item.className = 'item' + (key === 'unclassified' ? ' unclassified' : '');
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    if(key !== 'unclassified') dot.style.background = cat.color;
+    const label = document.createElement('span');
+    label.textContent = cat.label;
+    item.appendChild(dot); item.appendChild(label);
+    legendEl.appendChild(item);
+  }
+}
+
+/** Fetches ALL annotations (no tag filter) for a single uri, paginated. */
+async function fetchForUri(uri){
   let offset = 0, all = [], total = Infinity;
   const token = getToken();
   const headers = token ? { "Authorization": `Bearer ${token}` } : {};
   while (offset < total && offset < 5000){
-    const url = `${API}?group=${GROUP_ID}&uri=${encodeURIComponent(TARGET_URI)}&tag=${encodeURIComponent(TARGET_TAG)}&limit=${PAGE_SIZE}&offset=${offset}&_separate_replies=false`;
+    const url = `${API}?group=${GROUP_ID}&uri=${encodeURIComponent(uri)}&limit=${PAGE_SIZE}&offset=${offset}&_separate_replies=false`;
     const res = await fetch(url, { headers });
     if(res.status === 401 || res.status === 403){
       throw new Error(`access denied (HTTP ${res.status}) — the group is private: set a valid token with the 🔑 chip in the bottom right`);
@@ -231,22 +278,55 @@ async function fetchFiltered(){
     all = all.concat(data.rows || []);
     if(!data.rows || data.rows.length < PAGE_SIZE) break;
     offset += PAGE_SIZE;
-    statusEl.textContent = `fetched ${all.length} of ${total} matching annotations…`;
+    statusEl.textContent = `fetched ${all.length} of ${total} annotations from ${uri.split('/').pop()}…`;
   }
-  // double filter client-side for safety
-  return all.filter(a => a.uri === TARGET_URI && (a.tags || []).includes(TARGET_TAG));
+  return all.filter(a => a.uri === uri);
 }
 
-function buildFrequencies(annotations){
+/** Classifies a two-column-page annotation as src (td[2]) or eng (td[3])
+ *  column by inspecting the RangeSelector XPath; 'unclassified' otherwise
+ *  (e.g. a selection spanning both cells, or a page-level/root annotation). */
+function classifyColumn(ann, srcCategory, engCategory){
+  const target = (ann.target && ann.target[0]) || {};
+  const selectors = target.selector || [];
+  const range = selectors.find(s => s.type === 'RangeSelector');
+  const path = range ? `${range.startContainer || ''} ${range.endContainer || ''}` : '';
+  const hasSrc = /td\[2\]/.test(path);
+  const hasEng = /td\[3\]/.test(path);
+  if(hasSrc && !hasEng) return srcCategory;
+  if(hasEng && !hasSrc) return engCategory;
+  return 'unclassified';
+}
+
+/** Fetches and categorizes annotations from all SOURCES. Returns an array
+ *  of { ann, category }. */
+async function fetchAllCategorized(){
+  const out = [];
+  for(const src of SOURCES){
+    const anns = await fetchForUri(src.uri);
+    for(const ann of anns){
+      const category = src.fixedCategory
+        ? src.fixedCategory
+        : classifyColumn(ann, src.srcCategory, src.engCategory);
+      out.push({ ann, category });
+    }
+  }
+  return out;
+}
+
+function buildFrequencies(categorized){
+  // Map<category, Map<word,count>>
   const freq = new Map();
-  for(const ann of annotations){
+  for(const { ann, category } of categorized){
+    if(!freq.has(category)) freq.set(category, new Map());
+    const m = freq.get(category);
     const text = (ann.text || '').toLowerCase();
     const words = text.match(/[a-z']+/g) || [];
     for(let w of words){
       w = w.replace(/^'+|'+$/g,'');
       if(w.length < 3) continue;
       if(STOPWORDS.has(w)) continue;
-      freq.set(w, (freq.get(w) || 0) + 1);
+      m.set(w, (m.get(w) || 0) + 1);
     }
   }
   return freq;
@@ -256,7 +336,7 @@ function rectsOverlap(a, b){
   return !(a.x1 < b.x0 || a.x0 > b.x1 || a.y1 < b.y0 || a.y0 > b.y1);
 }
 
-async function renderCloud(freq, container){
+async function renderCloud(freqByCategory, container){
   const W = 920, H = 560, cx = W/2, cy = H/2;
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
@@ -266,26 +346,34 @@ async function renderCloud(freq, container){
   container.innerHTML = '';
   container.appendChild(svg);
 
-  const entries = [...freq.entries()].sort((a,b) => b[1]-a[1]);
+  // Flatten into one list of {word, count, category}, one entry per
+  // (word, category) pair — so "love" can appear once per text layer.
+  let entries = [];
+  for(const [category, m] of freqByCategory.entries()){
+    for(const [word, count] of m.entries()){
+      entries.push({ word, count, category });
+    }
+  }
+  entries.sort((a,b) => b.count - a.count);
   if(entries.length === 0) return 0;
 
-  const maxFreq = entries[0][1];
-  const minFreq = entries[entries.length-1][1];
-  const minSize = 15, maxSize = 92;
+  const maxFreq = entries[0].count;
+  const minFreq = entries[entries.length-1].count;
+  const minSize = 13, maxSize = 80;
 
   await document.fonts.ready;
 
   const placed = [];
   let placedCount = 0;
 
-  entries.forEach(([word, count], idx) => {
+  entries.forEach(({word, count, category}, idx) => {
     const t = maxFreq === minFreq ? 1 : Math.sqrt((count - minFreq) / (maxFreq - minFreq));
     const size = minSize + (maxSize - minSize) * t;
-    const tier = idx === 0 ? 0 : idx < 5 ? 1 : idx < 15 ? 2 : 3;
-    const color = [ "var(--rubric)", "var(--gold)", "var(--verdigris)", "var(--ink)" ][tier];
-    const family = tier <= 2 ? "'Cormorant SC', serif" : "'EB Garamond', serif";
-    const weight = tier === 0 ? 700 : tier <= 2 ? 600 : 400;
-    const fontStyle = tier === 3 ? "italic" : "normal";
+    const rankTier = idx === 0 ? 0 : idx < 8 ? 1 : idx < 24 ? 2 : 3;
+    const color = (CATEGORIES[category] || CATEGORIES.unclassified).color;
+    const family = rankTier <= 1 ? "'Cormorant SC', serif" : "'EB Garamond', serif";
+    const weight = rankTier === 0 ? 700 : rankTier === 1 ? 600 : 400;
+    const fontStyle = rankTier === 3 ? "italic" : "normal";
 
     const textEl = document.createElementNS(svgNS, "text");
     textEl.textContent = word;
@@ -323,7 +411,7 @@ async function renderCloud(freq, container){
       textEl.setAttribute("y", y);
       textEl.setAttribute("opacity", "1");
       const title = document.createElementNS(svgNS, "title");
-      title.textContent = `${word} — ${count}×`;
+      title.textContent = `${word} — ${count}× — ${(CATEGORIES[category] || CATEGORIES.unclassified).label}`;
       textEl.appendChild(title);
       placedCount++;
     } else {
@@ -334,23 +422,24 @@ async function renderCloud(freq, container){
   return placedCount;
 }
 
-function renderList(annotations, container){
+function renderList(categorized, container){
   const details = document.createElement('details');
   const summary = document.createElement('summary');
-  summary.textContent = `show the ${annotations.length} underlying annotations`;
+  summary.textContent = `show the ${categorized.length} underlying annotations`;
   details.appendChild(summary);
-  for(const ann of annotations){
+  for(const { ann, category } of categorized){
     const target = (ann.target && ann.target[0]) || {};
     const tq = (target.selector || []).find(s => s.type === 'TextQuoteSelector');
     const quote = tq ? tq.exact : '';
     const user = (ann.user || '').replace('acct:','').split('@')[0];
     const link = (ann.links && (ann.links.incontext || ann.links.html)) || '#';
+    const catInfo = CATEGORIES[category] || CATEGORIES.unclassified;
     const div = document.createElement('div');
     div.className = 'entry';
     div.innerHTML = `
       ${quote ? `<div class="lemma">&laquo;${escapeHtml(quote)}&raquo;</div>` : ''}
       <div>${escapeHtml(ann.text || '(no gloss text)')}</div>
-      <div class="meta"><strong>${escapeHtml(user)}</strong> &middot; <a href="${link}" target="_blank" rel="noopener">open ↗</a></div>`;
+      <div class="meta"><span style="color:${category==='unclassified' ? catInfo.color : catInfo.color}">${escapeHtml(catInfo.label)}</span> &middot; <strong>${escapeHtml(user)}</strong> &middot; <a href="${link}" target="_blank" rel="noopener">open ↗</a></div>`;
     details.appendChild(div);
   }
   container.appendChild(details);
@@ -360,23 +449,25 @@ async function load(){
   mainEl.innerHTML = '<p class="empty">Loading annotations…</p>';
   statusEl.textContent = 'querying the API…';
   try{
-    const annotations = await fetchFiltered();
-    if(annotations.length === 0){
-      mainEl.innerHTML = '<p class="empty">No annotations found for this URI + tag combination.</p>';
+    const categorized = await fetchAllCategorized();
+    if(categorized.length === 0){
+      mainEl.innerHTML = '<p class="empty">No annotations found across the three sources.</p>';
       statusEl.textContent = 'no data.';
       return;
     }
-    const freq = buildFrequencies(annotations);
+    const freqByCategory = buildFrequencies(categorized);
 
     mainEl.innerHTML = '';
     const cloudWrap = document.createElement('div');
     cloudWrap.id = 'cloudWrap';
     mainEl.appendChild(cloudWrap);
 
-    const placedCount = await renderCloud(freq, cloudWrap);
-    renderList(annotations, mainEl);
+    const placedCount = await renderCloud(freqByCategory, cloudWrap);
+    renderList(categorized, mainEl);
 
-    statusEl.textContent = `${annotations.length} annotations · ${freq.size} unique words · ${placedCount} placed in the cloud.`;
+    const uniqueWords = new Set();
+    for(const m of freqByCategory.values()) for(const w of m.keys()) uniqueWords.add(w);
+    statusEl.textContent = `${categorized.length} annotations · ${uniqueWords.size} unique words · ${placedCount} placed in the cloud.`;
   }catch(err){
     mainEl.innerHTML = `<p class="error">Error: ${escapeHtml(err.message)}</p>`;
     statusEl.textContent = 'error.';
@@ -385,6 +476,7 @@ async function load(){
 
 document.getElementById('reload').addEventListener('click', load);
 refreshChip();
+renderLegend();
 load();
 </script>
 
