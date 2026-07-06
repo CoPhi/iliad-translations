@@ -133,11 +133,32 @@
   }
   #tokenChip:hover{ background:var(--rubric); }
   #tokenChip.set{ border-color:var(--verdigris); }
+  .sitenav{
+    max-width:960px; margin:0 auto; padding:14px 24px 0;
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    letter-spacing:.04em; text-transform:uppercase;
+    color:#8a8168; display:flex; gap:.5rem; align-items:center;
+  }
+  .sitenav a{ color:#8a8168; text-decoration:none; }
+  .sitenav a:hover{ color:var(--rubric); text-decoration:underline; }
+  .sitenav a[aria-current="page"]{ color:var(--rubric); font-weight:600; pointer-events:none; }
 </style>
 </head>
 <body>
 
 <div id="tokenChip" title="click: set/update your personal API token · double-click: hide until reload">🔑 token</div>
+
+<nav class="sitenav" aria-label="Iliad translations">
+  <a href="index.html">index</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-eng.html">english</a>
+  <span aria-hidden="true">·</span>
+  <a href="tuscan-english-parallel.html">tuscan</a>
+  <span aria-hidden="true">·</span>
+  <a href="venetian-english-parallel.html">venetian</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-amatory-wordcloud.html" aria-current="page">wordcloud</a>
+</nav>
 
 <header>
   <p class="eyebrow">Filtered corpus &middot; Hypothes.is</p>

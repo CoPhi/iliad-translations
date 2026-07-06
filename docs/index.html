@@ -27,9 +27,24 @@
   .file-group{margin-top:1.4rem;}
   .file-group h3{font-family:system-ui,sans-serif;font-size:.9rem;color:var(--ink);margin:0 0 .4rem;}
   .file-group h3 code{background:none;padding:0;}
+  .sitenav{font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:.5rem 0;margin-bottom:.8rem;border-bottom:1px solid var(--line);display:flex;gap:.5rem;align-items:center;}
+  .sitenav a{color:var(--muted);text-decoration:none;}
+  .sitenav a:hover{color:var(--accent);text-decoration:underline;}
+  .sitenav a[aria-current="page"]{color:var(--accent);font-weight:600;pointer-events:none;}
 </style>
 </head>
 <body>
+<nav class="sitenav" aria-label="Iliad translations">
+  <a href="index.html" aria-current="page">index</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-eng.html">english</a>
+  <span aria-hidden="true">·</span>
+  <a href="tuscan-english-parallel.html">tuscan</a>
+  <span aria-hidden="true">·</span>
+  <a href="venetian-english-parallel.html">venetian</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-amatory-wordcloud.html">wordcloud</a>
+</nav>
 <header>
   <h1>Iliad, Book XIV — Juno and Jove</h1>
   <p class="subtitle">Index of the three source texts — Pope's English translation, Casanova's Venetian translation, and Casanova's Tuscan translation — each aligned to a working English trot (AI-generated, for reference only) — and instructions for collaborative annotation on Hypothes.is</p>
