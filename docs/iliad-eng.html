@@ -43,9 +43,20 @@
       margin: 2rem 0;
       break-inside: avoid;
     }
+    ol.poem1{
+	counter-reset: verse 330;
+    }
+   ol.poem2{
+       counter-reset: verse 349;
+   }
+   ol.poem3{
+	counter-reset: verse 368;
+   }
+  ol.poem4{
+	counter-reset: verse 387;
+    }
     ol.poem {
       list-style: none;
-      counter-reset: verse 330;
       margin: 0;
       padding: 0;
       max-width: 720px;
@@ -70,6 +81,7 @@
       font-size: .82rem;
       white-space: nowrap;
     }
+    
     @media (max-width: 760px) {
       body { margin-top: 1rem; }
       ol.poem li { padding-left: 3rem; }
@@ -92,7 +104,7 @@
 
 <main class="edition">
   <h3>vesum016</h3>
-  <ol class="poem" start="331" aria-label="Iliad passage 14.331-349">
+  <ol class="poem poem1" start="331" aria-label="Iliad passage 14.331-349">
     <li id="verse-331" value="331" data-line="331">To Ida’s top successful Juno flies;</li>
     <li id="verse-332" value="332" data-line="332">Great Jove surveys her with desiring eyes:</li>
     <li id="verse-333" value="333" data-line="333">The God, whose light’ning sets the₁ heav’ns on fire,</li>
@@ -114,7 +126,7 @@
     <li id="verse-349" value="349" data-line="349">The steeds, prepar’d my chariot to convey</li>
   </ol>
   <h3>vesum017</h3>
-  <ol class="poem" start="350" aria-label="Iliad passage 14.350-368">
+  <ol class="poem poem2" start="350" aria-label="Iliad passage 14.350-368">
     <li id="verse-350" value="350" data-line="350">O’er earth and seas, and₁ thro’ th’ aerial way,</li>
     <li id="verse-351" value="351" data-line="351">Wait under Ide: Of thy superiour pow’r</li>
     <li id="verse-352" value="352" data-line="352">To ask consent, I leave th’ Olympian bow’r;</li>
@@ -136,7 +148,7 @@
     <li id="verse-368" value="368" data-line="368">Whence godlike Rhadamanth and Minos sprung.</li>
     </ol>
   <h3>vesum020</h3>
-  <ol class="poem" start="369" aria-label="Iliad passage 14.369-387">
+  <ol class="poem poem3" start="369" aria-label="Iliad passage 14.369-387">
     <li id="verse-369" value="369" data-line="369">Not thus I burn’d for fair Latona&#x27;s face,</li>
     <li id="verse-370" value="370" data-line="370">Nor comelier Ceres’ more majestick grace.</li>
     <li id="verse-371" value="371" data-line="371">Not thus ev’n for thyself I felt desire,</li>
@@ -158,7 +170,7 @@
     <li id="verse-387" value="387" data-line="387">She ceas’d, and smiling with superiour love,</li>
     </ol>
   <h3>vesum021</h3>
-  <ol class="poem" start="388" aria-label="Iliad passage 14.388-406">
+  <ol class="poem poem4" start="388" aria-label="Iliad passage 14.388-406">
     <li id="verse-388" value="388" data-line="388">Thus answer’d mild the cloud-compelling Jove.</li>
     <li id="verse-389" value="389" data-line="389">Nor God, nor₁ mortal shall our joys behold,</li>
     <li id="verse-390" value="390" data-line="390">Shaded with clouds, and circumfus’d in gold,</li>
