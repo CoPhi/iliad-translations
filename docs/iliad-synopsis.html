@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iliad 14.292-353 / 331-406 — Casanova’s Venetian / Casanova’s Tuscan / Pope’s English / Homer’s Greek</title>
+  <style>
+    :root {
+      --ink: #1f2328;
+      --muted: #6a737d;
+      --line: #d8dee4;
+      --soft: #f6f8fa;
+      --accent: #7a3e16;
+      --bg: #ffffff;
+      --note: #8a6d3b;
+      --note-bg: #fdf6e3;
+      --fs: 1;
+    }
+    html { background: var(--bg); }
+    body {
+      margin: 2rem auto;
+      max-width: 98vw;
+      padding: 0 .5rem 3rem;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.42;
+    }
+    header {
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1.15;
+      margin: 0 0 .4rem;
+      color: var(--accent);
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .92rem;
+    }
+    section.stanza { margin: 2rem 0; break-inside: avoid; }
+    h2 {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .95rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 .5rem;
+    }
+    h2 .refs { color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 400; }
+    table.triple {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    table.triple th {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .78rem;
+      text-align: left;
+      color: var(--muted);
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      padding: .45rem .6rem;
+      width: 25%;
+    }
+    table.triple td {
+      vertical-align: top;
+      border-right: 1px solid var(--line);
+      padding: .5rem .7rem;
+      font-size: calc(.98rem * var(--fs));
+      width: 25%;
+    }
+    table.triple td.grc { font-family: "Cardo", "Gentium Plus", "Athena Ruby", Georgia, serif; }
+    table.triple td:last-child { border-right: none; }
+    table.triple tr td { border-bottom: none; }
+    p.vline { margin: 0 0 .25rem; }
+    p.vline.newstanza { margin-top: 1.1rem; }
+    p.vline .ln {
+      display: inline-block;
+      min-width: 2.4rem;
+      color: var(--accent);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: calc(.72rem * var(--fs));
+      vertical-align: top;
+      padding-top: .15rem;
+    }
+    .nota {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .78rem;
+      color: var(--note);
+      background: var(--note-bg);
+      border-left: 3px solid var(--note);
+      padding: .4rem .6rem;
+      margin: .6rem 0 0;
+    }
+    @media (max-width: 900px) {
+      table.triple, table.triple tbody, table.triple tr, table.triple td, table.triple th {
+        display: block; width: auto !important;
+      }
+      table.triple thead { display: none; }
+      table.triple td { border: 0; padding: .3rem .2rem; }
+      table.triple td::before {
+        display: block; font-family: system-ui, sans-serif; font-size: .72rem;
+        color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: .4rem 0 .1rem;
+      }
+      table.triple td.ven::before { content: "Venetian (Casanova)"; }
+      table.triple td.tus::before { content: "Tuscan (Casanova)"; }
+      table.triple td.eng::before { content: "English (Pope)"; }
+      table.triple td.grc::before { content: "Greek (Homer)"; }
+    }
+    body.seq-layout table.triple, body.seq-layout table.triple tbody, body.seq-layout table.triple tr, body.seq-layout table.triple td, body.seq-layout table.triple th {
+      display: block; width: auto !important;
+    }
+    body.seq-layout table.triple thead { display: none; }
+    body.seq-layout table.triple td { border: 0; padding: .3rem .2rem; }
+    body.seq-layout table.triple td::before {
+      display: block; font-family: system-ui, sans-serif; font-size: .72rem;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: .8rem 0 .1rem;
+    }
+    body.seq-layout table.triple td.ven::before { content: "Venetian (Casanova)"; }
+    body.seq-layout table.triple td.tus::before { content: "Tuscan (Casanova)"; }
+    body.seq-layout table.triple td.eng::before { content: "English (Pope)"; }
+    body.seq-layout table.triple td.grc::before { content: "Greek (Homer)"; }
+    @media print {
+      body { max-width: none; margin: 1cm; }
+      section.stanza { page-break-inside: avoid; }
+      h1, h2 { color: #000; }
+    }
+    .toolbar {
+      position: static;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .5rem;
+      margin: 0 0 1rem;
+    }
+    .zoombar {
+      display: flex;
+      gap: .3rem;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      padding: .3rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .zoombar button, .layout-toggle {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      width: 2rem;
+      height: 2rem;
+      line-height: 1;
+      border: 1px solid var(--line);
+      border-radius: .3rem;
+      background: #fff;
+      color: var(--accent);
+      cursor: pointer;
+    }
+    .layout-toggle {
+      background: var(--soft);
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      font-size: 1.1rem;
+    }
+    .zoombar button:hover, .layout-toggle:hover { background: var(--soft); }
+    .zoombar button:active, .layout-toggle:active { transform: translateY(1px); }
+    @media print { .toolbar { display: none; } }
+    .sitenav{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:.5rem 0;margin-bottom:.8rem;border-bottom:1px solid var(--line);display:flex;gap:.5rem;align-items:center;}
+    .sitenav a{color:var(--muted);text-decoration:none;}
+    .sitenav a:hover{color:var(--accent);text-decoration:underline;}
+    .sitenav a[aria-current="page"]{color:var(--accent);font-weight:600;pointer-events:none;}
+  </style>
+  <script src="js/hypothesis_color.js"></script>
+  <script src="https://hypothes.is/embed.js" async="async"></script>
+</head>
+<body>
+<div class="toolbar">
+  <div class="zoombar" aria-label="Text zoom controls">
+    <button type="button" onclick="adjustZoom(-1)" aria-label="Zoom out">−</button>
+    <button type="button" onclick="adjustZoom(1)" aria-label="Zoom in">+</button>
+  </div>
+  <button type="button" class="layout-toggle" id="layoutToggle" onclick="toggleLayout()" aria-label="Switch between column and sequential layout" title="Switch to sequential layout">⊞</button>
+</div>
+<nav class="sitenav" aria-label="Iliad translations">
+  <a href="index.html">index</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-eng.html">english</a>
+  <span aria-hidden="true">·</span>
+  <a href="tuscan-english-parallel.html">tuscan</a>
+  <span aria-hidden="true">·</span>
+  <a href="venetian-english-parallel.html">venetian</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-synopsis.html" aria-current="page">synopsis</a>
+  <span aria-hidden="true">·</span>
+  <a href="iliad-amatory-wordcloud.html">wordcloud</a>
+</nav>
+<header>
+  <h1>Casanova’s Venetian / Casanova’s Tuscan / Pope’s English / Homer’s Greek — Iliad 14.292-353</h1>
+  <p class="subtitle">Venetian and Tuscan are Casanova’s own two translations of the same passage, aligned here frame by frame (a frame being one or more stanzas, as the correspondence requires). Pope’s English couplets are grouped by content to match each Tuscan frame as closely as possible, and Homer’s Greek (TLG 0012.001, ed. Allen) is grouped in turn to match Pope’s line ranges. Where the narrative boundaries do not line up exactly, a note flags the mismatch.</p>
+</header>
+
+<main>
+
+<section class="stanza" id="row-1">
+<h2>Frame 1 <span class="refs">— Tuscan 43 · Venetian 62 · Pope 331–336 · Homer 292–296</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">62.1</span>Subito che el l’ha vista s’impossessa</p>
+<p class="vline"><span class="ln">62.2</span>De le calde so viscere l’amor;</p>
+<p class="vline"><span class="ln">62.3</span>E el lo assalisce con la forza istessa,</p>
+<p class="vline"><span class="ln">62.4</span>Come quando, a calmarghe el fiero ardor,</p>
+<p class="vline"><span class="ln">62.5</span>Giunon la prima volta g’ha concessa</p>
+<p class="vline"><span class="ln">62.6</span>La rara zogia del virgineo fior,</p>
+<p class="vline"><span class="ln">62.7</span>Che in scondon dei parenti l’è andà in letto</p>
+<p class="vline"><span class="ln">62.8</span>Con ella, el stral d’amor ficcà nel petto.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">43.1</span>Là, mentre Giugno al Gargaro salìo,</p>
+<p class="vline"><span class="ln">43.2</span>Ei cheto rimpiattossi, e sotto il velo</p>
+<p class="vline"><span class="ln">43.3</span>Dell’augello canoro si coprìo,</p>
+<p class="vline"><span class="ln">43.4</span>Detto Cimindi in terra, Calci in cielo.</p>
+<p class="vline"><span class="ln">43.5</span>Quando Giove la vide, di desìo</p>
+<p class="vline"><span class="ln">43.6</span>Amor l’accese col pungente telo,</p>
+<p class="vline"><span class="ln">43.7</span>Come la prima volta, che in nascosto</p>
+<p class="vline"><span class="ln">43.8</span>S’è, de’ parenti, secon a letto posto.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">331</span>To Ida’s top successful Juno flies;</p>
+<p class="vline"><span class="ln">332</span>Great Jove surveys her with desiring eyes:</p>
+<p class="vline"><span class="ln">333</span>The God, whose light’ning sets the heav’ns on fire,</p>
+<p class="vline"><span class="ln">334</span>Thro’ all his bosom feels the fierce desire;</p>
+<p class="vline"><span class="ln">335</span>Fierce as when first by stealth he seiz’d her charms,</p>
+<p class="vline"><span class="ln">336</span>Mix’d with her soul, and melted in her arms.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">292</span>Ἥρη δὲ κραιπνῶς προσεβήσετο Γάργαρον ἄκρον</p>
+<p class="vline"><span class="ln">293</span>Ἴδης ὑψηλῆς· ἴδε δὲ νεφεληγερέτα Ζεύς.</p>
+<p class="vline"><span class="ln">294</span>ὡς δ’ ἴδεν, ὥς μιν ἔρως πυκινὰς φρένας ἀμφεκάλυψεν,</p>
+<p class="vline"><span class="ln">295</span>οἷον ὅτε πρῶτόν περ ἐμισγέσθην φιλότητι</p>
+<p class="vline"><span class="ln">296</span>εἰς εὐνὴν φοιτῶντε, φίλους λήθοντε τοκῆας.</p>
+</td>
+</tr></tbody>
+</table>
+<p class="nota">Note: Tuscan 43.1–4 (the bird-disguise episode on Mount Gargarus, presumably Sleep/Hypnos) has no counterpart in the Venetian or English excerpts given here, nor in the Greek text from 292 onward: in Homer that episode (the disguise of Hypnos as the bird chalcis/kymindis) occupies 14.286–291, just before this extract begins.</p>
+</section>
+
+<section class="stanza" id="row-2">
+<h2>Frame 2 <span class="refs">— Tuscan 44 · Venetian 63 · Pope 337–346 · Homer 297–303</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">63.1</span>El ghe va incontra, e assae cortesemente</p>
+<p class="vline"><span class="ln">63.2</span>El ghe dise: Giunon, che raro caso!</p>
+<p class="vline"><span class="ln">63.3</span>Ti vien da Olimpo frettolosamente,</p>
+<p class="vline"><span class="ln">63.4</span>E i to cavai no vedo, né el to carro?</p>
+<p class="vline"><span class="ln">63.5</span>Com’estu vegnua qua improvisamente?</p>
+<p class="vline"><span class="ln">63.6</span>EI to vegnir m’è sommamente caro.</p>
+<p class="vline"><span class="ln">63.7</span>Giunon allora, inganni macchinando</p>
+<p class="vline"><span class="ln">63.8</span>Cusì responde a Giove venerando.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">44.1</span>Giunta, che fugli innanzi: eh perché mai</p>
+<p class="vline"><span class="ln">44.2</span>Lasciasti Olimpo? dissele il gran Giove;</p>
+<p class="vline"><span class="ln">44.3</span>A che vieni tu qui, dove ten vai,</p>
+<p class="vline"><span class="ln">44.4</span>Dove sono i tuoi cocchj, e i destrier dove?</p>
+<p class="vline"><span class="ln">44.5</span>In capo al mondo, a dar patenti prove</p>
+<p class="vline"><span class="ln">44.6</span>Di amor costante ad Oceano padre,</p>
+<p class="vline"><span class="ln">44.7</span>Che in sua casa allevommi, e a Teti madre.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">337</span>Fix’d on her eyes he fed his eager look,</p>
+<p class="vline"><span class="ln">338</span>Then press’d her hand, and thus with transport spoke.</p>
+<p class="vline"><span class="ln">339</span>Why comes my Goddess from th’ aethereal sky,</p>
+<p class="vline"><span class="ln">340</span>And not her steeds and flaming chariot nigh?</p>
+<p class="vline"><span class="ln">341</span>Then she—I haste to those remote abodes,</p>
+<p class="vline"><span class="ln">342</span>Where the great parents of the deathless Gods,</p>
+<p class="vline"><span class="ln">343</span>The rev’rend Ocean and grey Tethys reign,</p>
+<p class="vline"><span class="ln">344</span>On the last limits of the land and main.</p>
+<p class="vline"><span class="ln">345</span>I visit these, to whose indulgent cares</p>
+<p class="vline"><span class="ln">346</span>I owe the nursing of my tender years.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">297</span>στῆ δ’ αὐτῆς προπάροιθεν ἔπος τ’ ἔφατ’ ἔκ τ’ ὀνόμαζεν·</p>
+<p class="vline"><span class="ln">298</span>Ἥρη πῇ μεμαυῖα κατ’ Οὐλύμπου τόδ’ ἱκάνεις;</p>
+<p class="vline"><span class="ln">299</span>ἵπποι δ’ οὐ παρέασι καὶ ἅρματα τῶν κ’ ἐπιβαίης.</p>
+<p class="vline"><span class="ln">300</span>Τὸν δὲ δολοφρονέουσα προσηύδα πότνια Ἥρη·</p>
+<p class="vline"><span class="ln">301</span>ἔρχομαι ὀψομένη πολυφόρβου πείρατα γαίης,</p>
+<p class="vline"><span class="ln">302</span>Ὠκεανόν τε θεῶν γένεσιν καὶ μητέρα Τηθύν,</p>
+<p class="vline"><span class="ln">303</span>οἵ με σφοῖσι δόμοισιν ἐῢ τρέφον ἠδ’ ἀτίταλλον·</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+<section class="stanza" id="row-3">
+<h2>Frame 3 <span class="refs">— Tuscan 45 · Venetian 64–65 · Pope 347–354 · Homer 304–311</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">64.1</span>Vago verso el confin de l’alma terra</p>
+<p class="vline"><span class="ln">64.2</span>A veder Ocean padre immortal,</p>
+<p class="vline"><span class="ln">64.3</span>E Teti madre che in nobil maniera</p>
+<p class="vline"><span class="ln">64.4</span>M’ha arlevà in la so casa principal.</p>
+<p class="vline"><span class="ln">64.5</span>Vago a calmarghe l’ira, e quella fiera</p>
+<p class="vline"><span class="ln">64.6</span>Lite a finir, per causa de la qual</p>
+<p class="vline"><span class="ln">64.7</span>I xe tanto un de l’altro desgustai,</p>
+<p class="vline"><span class="ln">64.8</span>Che è secoli che i dorme separai.</p>
+<p class="vline newstanza"><span class="ln">65.1</span>I mj cavai, che sul secco a portarme,</p>
+<p class="vline"><span class="ln">65.2</span>E su l’umido xe ugualmente pronti,</p>
+<p class="vline"><span class="ln">65.3</span>Fin che da ti son vegnua a licenziarme</p>
+<p class="vline"><span class="ln">65.4</span>A pie del monte ho con reguardo sconti.</p>
+<p class="vline"><span class="ln">65.5</span>Tel vegno a dir acciò che rampognarme</p>
+<p class="vline"><span class="ln">65.6</span>No ti possi che senza darte conti</p>
+<p class="vline"><span class="ln">65.7</span>Abbia podesto andar in cao del mondo</p>
+<p class="vline"><span class="ln">65.8</span>Visita a far a l’Oceano profondo.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">45.1</span>Vado que’ nodi a scior, se mel concedi,</p>
+<p class="vline"><span class="ln">45.2</span>Delle riffe antichissime, che fanno,</p>
+<p class="vline"><span class="ln">45.3</span>Che vivan separati. D’Ida a piedi</p>
+<p class="vline"><span class="ln">45.4</span>Lasciai i destrier, che mi vi condurranno.</p>
+<p class="vline"><span class="ln">45.5</span>Dall’Olimpo qui venni, come vedi,</p>
+<p class="vline"><span class="ln">45.6</span>Acciò, tu ’l sappia, e che non n’abbia affanno</p>
+<p class="vline"><span class="ln">45.7</span>Nè ti sdegni del cheto partir mio.</p>
+<p class="vline"><span class="ln">45.8</span>Così ella diss, e le rispose il Dio.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">347</span>For strife, I hear, has made that union cease,</p>
+<p class="vline"><span class="ln">348</span>Which held so long this ancient pair in peace.</p>
+<p class="vline"><span class="ln">349</span>The steeds, prepar’d my chariot to convey</p>
+<p class="vline"><span class="ln">350</span>O’er earth and seas, and thro’ th’ aerial way,</p>
+<p class="vline"><span class="ln">351</span>Wait under Ide: Of thy superiour pow’r</p>
+<p class="vline"><span class="ln">352</span>To ask consent, I leave th’ Olympian bow’r;</p>
+<p class="vline"><span class="ln">353</span>Nor seek, unknown to thee, the sacred cells</p>
+<p class="vline"><span class="ln">354</span>Deep under seas, where Ocean dwells.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">304</span>τοὺς εἶμ’ ὀψομένη, καί σφ’ ἄκριτα νείκεα λύσω·</p>
+<p class="vline"><span class="ln">305</span>ἤδη γὰρ δηρὸν χρόνον ἀλλήλων ἀπέχονται</p>
+<p class="vline"><span class="ln">306</span>εὐνῆς καὶ φιλότητος, ἐπεὶ χόλος ἔμπεσε θυμῷ.</p>
+<p class="vline"><span class="ln">307</span>ἵπποι δ’ ἐν πρυμνωρείῃ πολυπίδακος Ἴδης</p>
+<p class="vline"><span class="ln">308</span>ἑστᾶσ’, οἵ μ’ οἴσουσιν ἐπὶ τραφερήν τε καὶ ὑγρήν.</p>
+<p class="vline"><span class="ln">309</span>νῦν δὲ σεῦ εἵνεκα δεῦρο κατ’ Οὐλύμπου τόδ’ ἱκάνω,</p>
+<p class="vline"><span class="ln">310</span>μή πώς μοι μετέπειτα χολώσεαι, αἴ κε σιωπῇ</p>
+<p class="vline"><span class="ln">311</span>οἴχωμαι πρὸς δῶμα βαθυρρόου Ὠκεανοῖο.</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+<section class="stanza" id="row-4">
+<h2>Frame 4 <span class="refs">— Tuscan 46 · Venetian 66–68 · Pope 355–362 · Homer 312–318</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">66.1</span>El sforza-nubi ghe responde allora:</p>
+<p class="vline"><span class="ln">66.2</span>Sto to viazzo, Giunon, no desapprovo,</p>
+<p class="vline"><span class="ln">66.3</span>E da qua un poco ti’l tarà in bon ora;</p>
+<p class="vline"><span class="ln">66.4</span>Perchè l’ardor carnal, che adesso provo,</p>
+<p class="vline"><span class="ln">66.5</span>In vita mia non ho provà gnancora;</p>
+<p class="vline"><span class="ln">66.6</span>E per sopirlo conveniente trovo,</p>
+<p class="vline"><span class="ln">66.7</span>Che ti te fermi, e ti me vegni arente,</p>
+<p class="vline"><span class="ln">66.8</span>E che andemo a dormir subitamente.</p>
+<p class="vline newstanza"><span class="ln">67.1</span>No me recordo d’aver mai sentio,</p>
+<p class="vline"><span class="ln">67.2</span>Dopo che ho suzzà el latte d’Amaltea,</p>
+<p class="vline"><span class="ln">67.3</span>Un fogo circolar nel petto mio,</p>
+<p class="vline"><span class="ln">67.4</span>Innamorà de donna, o pur de dea,</p>
+<p class="vline"><span class="ln">67.5</span>Simile a questo, che, come mario,</p>
+<p class="vline"><span class="ln">67.6</span>Me fa vegnir de sodisfarlo idea:</p>
+<p class="vline"><span class="ln">67.7</span>De stuar cara Giunon me sia permesso</p>
+<p class="vline"><span class="ln">67.8</span>L’ardor che sento a stuzzegarme adesso.</p>
+<p class="vline newstanza"><span class="ln">68.1</span>L’è più grando de quello che ho sentio</p>
+<p class="vline"><span class="ln">68.2</span>Quando de la bellissima mugier</p>
+<p class="vline"><span class="ln">68.3</span>Del famoso Ision me so invaghio,</p>
+<p class="vline"><span class="ln">68.4</span>Dalla qual quell’illustre consegier</p>
+<p class="vline"><span class="ln">68.5</span>Piritoo ho avù che no cedeva a un dio</p>
+<p class="vline"><span class="ln">68.6</span>Spiegando el so savissimo penster.</p>
+<p class="vline"><span class="ln">68.7</span>E de questo minor l’ardor xe sta</p>
+<p class="vline"><span class="ln">68.8</span>Quando de Danae me so innamorà.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">46.1</span>Di far questo viaggio il tempo avrai,</p>
+<p class="vline"><span class="ln">46.2</span>Giunon mio dolce ben, da qui un pochetto,</p>
+<p class="vline"><span class="ln">46.3</span>Poich’or d’uopo ho di te, bramando assai,</p>
+<p class="vline"><span class="ln">46.4</span>Che ci ponghiamo in amistate a letto.</p>
+<p class="vline"><span class="ln">46.5</span>Per donna, o Dea non mi domò giammai,</p>
+<p class="vline"><span class="ln">46.6</span>Com’ora, il caldo amor nè il cor, nè il petto</p>
+<p class="vline"><span class="ln">46.7</span>E neppur quando d’Ission mi piacque</p>
+<p class="vline"><span class="ln">46.8</span>La mogliera, cui Piritoo nacque.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">355</span>For that (said Jove) suffice another day;</p>
+<p class="vline"><span class="ln">356</span>But eager love denies the least delay.</p>
+<p class="vline"><span class="ln">357</span>Let softer cares the present hour employ,</p>
+<p class="vline"><span class="ln">358</span>And be these moments sacred all to joy.</p>
+<p class="vline"><span class="ln">359</span>Ne’er did my soul so strong a passion prove,</p>
+<p class="vline"><span class="ln">360</span>Or for an earthly, or a heav’nly love:</p>
+<p class="vline"><span class="ln">361</span>Not when I press’d Ixion’s matchless dame,</p>
+<p class="vline"><span class="ln">362</span>Whence rose Perithous like the Gods in fame.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">312</span>Τὴν δ’ ἀπαμειβόμενος προσέφη νεφεληγερέτα Ζεύς·</p>
+<p class="vline"><span class="ln">313</span>Ἥρη κεῖσε μὲν ἔστι καὶ ὕστερον ὁρμηθῆναι,</p>
+<p class="vline"><span class="ln">314</span>νῶϊ δ’ ἄγ’ ἐν φιλότητι τραπείομεν εὐνηθέντε.</p>
+<p class="vline"><span class="ln">315</span>οὐ γάρ πώ ποτέ μ’ ὧδε θεᾶς ἔρος οὐδὲ γυναικὸς</p>
+<p class="vline"><span class="ln">316</span>θυμὸν ἐνὶ στήθεσσι περιπροχυθεὶς ἐδάμασσεν,</p>
+<p class="vline"><span class="ln">317</span>οὐδ’ ὁπότ’ ἠρασάμην Ἰξιονίης ἀλόχοιο,</p>
+<p class="vline"><span class="ln">318</span>ἣ τέκε Πειρίθοον θεόφιν μήστωρ’ ἀτάλαντον·</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+<section class="stanza" id="row-5">
+<h2>Frame 5 <span class="refs">— Tuscan 47 · Venetian 69 · Pope 363–368 · Homer 319–322</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">69.1</span>Danae d’Acrisio fia da i pie eleganti,</p>
+<p class="vline"><span class="ln">69.2</span>Che frutto del mio amor ha messo al mondo</p>
+<p class="vline"><span class="ln">69.3</span>Perseo, che fra i mortali tutti quanti</p>
+<p class="vline"><span class="ln">69.4</span>No ha trovà nè compagno, nè segondo.</p>
+<p class="vline"><span class="ln">69.5</span>Nè m’è andà el desiderio tanto avanti</p>
+<p class="vline"><span class="ln">69.6</span>Quando del gran Fenice omo profondo</p>
+<p class="vline"><span class="ln">69.7</span>Ho ingravidà la fia, che ha avudo el vanto</p>
+<p class="vline"><span class="ln">69.8</span>De partorir Minosse, e Radamanto.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">47.1</span>Tal non mi accese fiamma alta, e felice,</p>
+<p class="vline"><span class="ln">47.2</span>Quando Danae godei, d’Acriso figlia,</p>
+<p class="vline"><span class="ln">47.3</span>Che del nobil Perseo fei genitrice,</p>
+<p class="vline"><span class="ln">47.4</span>Sovrano eroe, del mondo maraviglia;</p>
+<p class="vline"><span class="ln">47.5</span>Nè l’ardor, che la figlia di Fenice</p>
+<p class="vline"><span class="ln">47.6</span>Mi fè sentire, a questo rassomiglia:</p>
+<p class="vline"><span class="ln">47.7</span>Ebbi da lei Minosse, e Radamanto</p>
+<p class="vline"><span class="ln">47.8</span>Ma d’ottenerla non bramai cotanto.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">363</span>Not when fair Danae felt the show’r of gold</p>
+<p class="vline"><span class="ln">364</span>Stream into life, whence Perseus brave and bold.</p>
+<p class="vline"><span class="ln">365</span>Not thus I burn’d for either Theban dame,</p>
+<p class="vline"><span class="ln">366</span>(Bacchus from this, from that Alcides came).</p>
+<p class="vline"><span class="ln">367</span>Not Phoenix’s daughter, beautiful and young,</p>
+<p class="vline"><span class="ln">368</span>Whence godlike Rhadamanth and Minos sprung.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">319</span>οὐδ’ ὅτε περ Δανάης καλλισφύρου Ἀκρισιώνης,</p>
+<p class="vline"><span class="ln">320</span>ἣ τέκε Περσῆα πάντων ἀριδείκετον ἀνδρῶν·</p>
+<p class="vline"><span class="ln">321</span>οὐδ’ ὅτε Φοίνικος κούρης τηλεκλειτοῖο,</p>
+<p class="vline"><span class="ln">322</span>ἣ τέκε μοι Μίνων τε καὶ ἀντίθεον Ῥαδάμανθυν·</p>
+</td>
+</tr></tbody>
+</table>
+<p class="nota">Note: Pope 365–366 (the "Theban dames," i.e. Semele and Alcmena) anticipates content that in Casanova’s ordering appears instead in the following frame (Tuscan 48 / Venetian 70). The sequence of amorous comparisons differs between the two traditions: Pope goes Semele/Alcmena → Phoenix’s daughter, while Casanova goes Phoenix’s daughter → Semele/Alcmena — and Homer’s own order (319–322 Danae/Perseus, then Phoenix’s daughter, with Semele/Alcmena following at 323–325) confirms that it is Pope, not Casanova, who has transposed the sequence.</p>
+</section>
+
+<section class="stanza" id="row-6">
+<h2>Frame 6 <span class="refs">— Tuscan 48 · Venetian 70–71 · Pope 369–372 · Homer 323–328</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">70.1</span>Semele no ho ama tanto, che m’ha fatto</p>
+<p class="vline"><span class="ln">70.2</span>Bacco de l’uman genere letizia;</p>
+<p class="vline"><span class="ln">70.3</span>Ne per Alcmena, da la qual xe nato</p>
+<p class="vline"><span class="ln">70.4</span>Ercole forte ho avù tanta amicizia.</p>
+<p class="vline"><span class="ln">70.5</span>Con la regina Cerere beato</p>
+<p class="vline"><span class="ln">70.6</span>Certo no son sta tanto, e la delizia</p>
+<p class="vline"><span class="ln">70.7</span>No la m’ha procurà, seguro son,</p>
+<p class="vline"><span class="ln">70.8</span>Che me promette adesso sta passion.</p>
+<p class="vline newstanza"><span class="ln">71.1</span>Con Latona gloriosa tanto gusto</p>
+<p class="vline"><span class="ln">71.2</span>Certo no ho avù, nè gnanca con ti stessa,</p>
+<p class="vline"><span class="ln">71.3</span>Quando la prima volta assae robusto</p>
+<p class="vline"><span class="ln">71.4</span>T’ho, Giunon augustissima, compressa</p>
+<p class="vline"><span class="ln">71.5</span>Quanto ghe n’averò, come che e giusto,</p>
+<p class="vline"><span class="ln">71.6</span>In sto ponto, se al mio voler sommessa</p>
+<p class="vline"><span class="ln">71.7</span>Ti me permetterà de darte un segno,</p>
+<p class="vline"><span class="ln">71.8</span>Che ti ha parte al mio cuor come al mio regno.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">48.1</span>Nè tanto arsi per Semele, da cui</p>
+<p class="vline"><span class="ln">48.2</span>Il dilettevol Bacco al mondo venne;</p>
+<p class="vline"><span class="ln">48.3</span>Nè d’Alcmena si vago a Tebe io fui,</p>
+<p class="vline"><span class="ln">48.4</span>Da cui la terra il grande Alcide ottenne;</p>
+<p class="vline"><span class="ln">48.5</span>Neppur per i medesmi amplessi tui,</p>
+<p class="vline"><span class="ln">48.6</span>Nè per Latona, o Cerere mi avvenne</p>
+<p class="vline"><span class="ln">48.7</span>D’arder com’ora il cor arder mi sento</p>
+<p class="vline"><span class="ln">48.8</span>Dal cupido d’amor dolce tormento.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">369</span>Not thus I burn’d for fair Latona’s face,</p>
+<p class="vline"><span class="ln">370</span>Nor comelier Ceres’ more majestick grace.</p>
+<p class="vline"><span class="ln">371</span>Not thus ev’n for thyself I felt desire,</p>
+<p class="vline"><span class="ln">372</span>As now my veins receive the pleasing fire.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">323</span>οὐδ’ ὅτε περ Σεμέλης οὐδ’ Ἀλκμήνης ἐνὶ Θήβῃ,</p>
+<p class="vline"><span class="ln">324</span>ἥ ῥ’ Ἡρακλῆα κρατερόφρονα γείνατο παῖδα·</p>
+<p class="vline"><span class="ln">325</span>ἣ δὲ Διώνυσον Σεμέλη τέκε χάρμα βροτοῖσιν·</p>
+<p class="vline"><span class="ln">326</span>οὐδ’ ὅτε Δήμητρος καλλιπλοκάμοιο ἀνάσσης,</p>
+<p class="vline"><span class="ln">327</span>οὐδ’ ὁπότε Λητοῦς ἐρικυδέος, οὐδὲ σεῦ αὐτῆς,</p>
+<p class="vline"><span class="ln">328</span>ὡς σέο νῦν ἔραμαι καί με γλυκὺς ἵμερος αἱρεῖ.</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+<section class="stanza" id="row-7">
+<h2>Frame 7 <span class="refs">— Tuscan 49 · Venetian 72–73 · Pope 373–382 · Homer 329–336</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">72.1</span>Giunon dà a sto sermon cusì resposta:</p>
+<p class="vline"><span class="ln">72.2</span>Saturnio importunissimo qual mai</p>
+<p class="vline"><span class="ln">72.3</span>M’astu cosa infattibile proposta?</p>
+<p class="vline"><span class="ln">72.4</span>Se adesso ti vol render sodisfai</p>
+<p class="vline"><span class="ln">72.5</span>Sti desiderj toi, sta cima esposta</p>
+<p class="vline"><span class="ln">72.6</span>Me par che la sia troppo, e qua osservai</p>
+<p class="vline"><span class="ln">72.7</span>Facilmente saressimo, l’è certo.</p>
+<p class="vline"><span class="ln">72.8</span>Perché sto logo è troppo descoverto.</p>
+<p class="vline newstanza"><span class="ln">73.1</span>Cosa sarave mai se per azzardo</p>
+<p class="vline"><span class="ln">73.2</span>Qualcun de i eterni dei per qua passasse,</p>
+<p class="vline"><span class="ln">73.3</span>E quella cosa a far senza reguardo</p>
+<p class="vline"><span class="ln">73.4</span>Ne vedesse, e che pò pronto l’andasse</p>
+<p class="vline"><span class="ln">73.5</span>A dirlo ai altri, e che de tutti al sguardo</p>
+<p class="vline"><span class="ln">73.6</span>Là esposti con rason i ne burlasse?</p>
+<p class="vline"><span class="ln">73.7</span>Levandome de letto, zogia mia,</p>
+<p class="vline"><span class="ln">73.8</span>A casa certo più no tornaria.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">49.1</span>Come vuoi, gli rispose, o Dio importuno,</p>
+<p class="vline"><span class="ln">49.2</span>Che ci corichiamo adesso in cima d’Ida,</p>
+<p class="vline"><span class="ln">49.3</span>Dove può darsi, che fra numi alcuno</p>
+<p class="vline"><span class="ln">49.4</span>Ci scuopra, ci schernisca, e di noi rida?</p>
+<p class="vline"><span class="ln">49.5</span>Ch’indi a’ Dei corra, e che qui venga ognuno</p>
+<p class="vline"><span class="ln">49.6</span>A vederci, a beffarci, e ci derida.</p>
+<p class="vline"><span class="ln">49.7</span>Se tal fatto avvenisse, si arroscisco,</p>
+<p class="vline"><span class="ln">49.8</span>Che a casa ritornar più non ardisco.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">373</span>He spoke; the Goddess with the charming eyes</p>
+<p class="vline"><span class="ln">374</span>Glows with celestial red, and thus replies.</p>
+<p class="vline"><span class="ln">375</span>Is this a scene for love? On Ida’s height,</p>
+<p class="vline"><span class="ln">376</span>Expos’d to mortal, and immortal sight;</p>
+<p class="vline"><span class="ln">377</span>Our joys prophan’d by each familiar eye;</p>
+<p class="vline"><span class="ln">378</span>The sport of heav’n, and fable of the sky!</p>
+<p class="vline"><span class="ln">379</span>How shall I e’er review the blest abodes,</p>
+<p class="vline"><span class="ln">380</span>Or mix among the senate of the Gods?</p>
+<p class="vline"><span class="ln">381</span>Shall I not think, that, with disorder’d charms,</p>
+<p class="vline"><span class="ln">382</span>All heav’n beholds me recent from thy arms?</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">329</span>Τὸν δὲ δολοφρονέουσα προσηύδα πότνια Ἥρη·</p>
+<p class="vline"><span class="ln">330</span>αἰνότατε Κρονίδη ποῖον τὸν μῦθον ἔειπες.</p>
+<p class="vline"><span class="ln">331</span>εἰ νῦν ἐν φιλότητι λιλαίεαι εὐνηθῆναι</p>
+<p class="vline"><span class="ln">332</span>Ἴδης ἐν κορυφῇσι, τὰ δὲ προπέφανται ἅπαντα·</p>
+<p class="vline"><span class="ln">333</span>πῶς κ’ ἔοι εἴ τις νῶϊ θεῶν αἰειγενετάων</p>
+<p class="vline"><span class="ln">334</span>εὕδοντ’ ἀθρήσειε, θεοῖσι δὲ πᾶσι μετελθὼν</p>
+<p class="vline"><span class="ln">335</span>πεφράδοι; οὐκ ἂν ἔγωγε τεὸν πρὸς δῶμα νεοίμην</p>
+<p class="vline"><span class="ln">336</span>ἐξ εὐνῆς ἀνστᾶσα, νεμεσσητὸν δέ κεν εἴη.</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+<section class="stanza" id="row-8">
+<h2>Frame 8 <span class="refs">— Tuscan 50 · Venetian 74–76 · Pope 383–392 · Homer 337–345</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">74.1</span>Ti vedi quanto giusta e ben fondada</p>
+<p class="vline"><span class="ln">74.2</span>Sarave la vergogna che avarave</p>
+<p class="vline"><span class="ln">74.3</span>Purchè la cosa no se razza in strada</p>
+<p class="vline"><span class="ln">74.4</span>El sodisfarte no me sarà grave.</p>
+<p class="vline"><span class="ln">74.5</span>Andemo in la to alcova fabbricada</p>
+<p class="vline"><span class="ln">74.6</span>Da Vulcan fio diletto, che con chiave</p>
+<p class="vline"><span class="ln">74.7</span>Gh’ha adattà porte in l’una, e l’altra banda,</p>
+<p class="vline"><span class="ln">74.8</span>E là desposta son: Mario comanda.</p>
+<p class="vline newstanza"><span class="ln">75.1</span>L’aduna-nubi Giove in sta maniera</p>
+<p class="vline"><span class="ln">75.2</span>A Giunon ha resposto, e l’ha persuasa:</p>
+<p class="vline"><span class="ln">75.3</span>No gh’avemo bisogno de renghiera</p>
+<p class="vline"><span class="ln">75.4</span>Per sto negozio, nè d’andar a casa;</p>
+<p class="vline"><span class="ln">75.5</span>Ma a la bona buttemose qua in terra,</p>
+<p class="vline"><span class="ln">75.6</span>E femo el fatto nostro in bona rasa;</p>
+<p class="vline"><span class="ln">75.7</span>E da dei, o da Omeni no temo,</p>
+<p class="vline"><span class="ln">75.8</span>Che visti, e descoverti esser possiemo.</p>
+<p class="vline newstanza"><span class="ln">76.1</span>Farò che intorno ne circonda adesso</p>
+<p class="vline"><span class="ln">76.2</span>Una nuvola lucida, e indorada,</p>
+<p class="vline"><span class="ln">76.3</span>Che a traverso de ella el sol istesso</p>
+<p class="vline"><span class="ln">76.4</span>A penetrar no troverà la strada;</p>
+<p class="vline"><span class="ln">76.5</span>Sibben che aver per tutto gh’è concesso</p>
+<p class="vline"><span class="ln">76.6</span>Col so lume acutissimo l’intrada.</p>
+<p class="vline"><span class="ln">76.7</span>Saturnio in dir cusì fra i brazzi serra</p>
+<p class="vline"><span class="ln">76.8</span>La so consorte, e va a sentarse in terra.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">50.1</span>Ma se è ver, che ti abbruci un si gran foco,</p>
+<p class="vline"><span class="ln">50.2</span>Pronta a te m’offro, e la tua voglia adoro,</p>
+<p class="vline"><span class="ln">50.3</span>Purchè andiam giunti al destinto loco,</p>
+<p class="vline"><span class="ln">50.4</span>Che fè Vulcan con inclito lavoro.</p>
+<p class="vline"><span class="ln">50.5</span>Non temer, moglie mia, molto, nè poco,</p>
+<p class="vline"><span class="ln">50.6</span>Ripigliò il Dio, poichè con nube d’oro</p>
+<p class="vline"><span class="ln">50.7</span>Sì copriremci, che non sia concesso</p>
+<p class="vline"><span class="ln">50.8</span>Il vederci nell’atto al Sole istesso.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">383</span>With skill divine has Vulcan form’d thy bow’r,</p>
+<p class="vline"><span class="ln">384</span>Sacred to love and to the genial hour;</p>
+<p class="vline"><span class="ln">385</span>If such thy will, to that recess retire,</p>
+<p class="vline"><span class="ln">386</span>And secret there indulge thy soft desire.</p>
+<p class="vline"><span class="ln">387</span>She ceas’d, and smiling with superiour love,</p>
+<p class="vline"><span class="ln">388</span>Thus answer’d mild the cloud-compelling Jove.</p>
+<p class="vline"><span class="ln">389</span>Nor God, nor mortal shall our joys behold,</p>
+<p class="vline"><span class="ln">390</span>Shaded with clouds, and circumfus’d in gold,</p>
+<p class="vline"><span class="ln">391</span>Not ev’n the sun, who darts thro’ heav’n his rays,</p>
+<p class="vline"><span class="ln">392</span>And whose broad eye th’ extended earth surveys.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">337</span>ἀλλ’ εἰ δή ῥ’ ἐθέλεις καί τοι φίλον ἔπλετο θυμῷ,</p>
+<p class="vline"><span class="ln">338</span>ἔστιν τοι θάλαμος, τόν τοι φίλος υἱὸς ἔτευξεν</p>
+<p class="vline"><span class="ln">339</span>Ἥφαιστος, πυκινὰς δὲ θύρας σταθμοῖσιν ἐπῆρσεν·</p>
+<p class="vline"><span class="ln">340</span>ἔνθ’ ἴομεν κείοντες, ἐπεί νύ τοι εὔαδεν εὐνή.</p>
+<p class="vline"><span class="ln">341</span>Τὴν δ’ ἀπαμειβόμενος προσέφη νεφεληγερέτα Ζεύς·</p>
+<p class="vline"><span class="ln">342</span>Ἥρη μήτε θεῶν τό γε δείδιθι μήτέ τιν’ ἀνδρῶν</p>
+<p class="vline"><span class="ln">343</span>ὄψεσθαι· τοῖόν τοι ἐγὼ νέφος ἀμφικαλύψω</p>
+<p class="vline"><span class="ln">344</span>χρύσεον· οὐδ’ ἂν νῶϊ διαδράκοι Ἠέλιός περ,</p>
+<p class="vline"><span class="ln">345</span>οὗ τε καὶ ὀξύτατον πέλεται φάος εἰσοράασθαι.</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+<section class="stanza" id="row-9">
+<h2>Frame 9 <span class="refs">— Tuscan 51 · Venetian 77–79 · Pope 393–406 · Homer 346–353</span></h2>
+<table class="triple">
+<thead><tr><th>Venetian (Casanova)</th><th>Tuscan (Casanova)</th><th>English (Pope)</th><th>Greek (Homer)</th></tr></thead>
+<tbody><tr>
+<td class="ven">
+<p class="vline"><span class="ln">77.1</span>La madre Terra sotto ghe fornisce</p>
+<p class="vline"><span class="ln">77.2</span>A mò cussin freschetta erba novella,</p>
+<p class="vline"><span class="ln">77.3</span>E ’l Coton rugiadoso, che condisce,</p>
+<p class="vline"><span class="ln">77.4</span>E ’l grato zaffaran, che s’inanella</p>
+<p class="vline"><span class="ln">77.5</span>Con el denso Giacinto, che ammollisce,</p>
+<p class="vline"><span class="ln">77.6</span>E ghe rende più comoda la sella.</p>
+<p class="vline"><span class="ln">77.7</span>St’erbe, e fiori con studio sparpagnai</p>
+<p class="vline"><span class="ln">77.8</span>Li tegniva da terra sollevai.</p>
+<p class="vline newstanza"><span class="ln">78.1</span>La felice cocchietta questa è stada</p>
+<p class="vline"><span class="ln">78.2</span>Dove s’ha collegà sta coppia eterna.</p>
+<p class="vline"><span class="ln">78.3</span>La nuvola bellissima, e indorada</p>
+<p class="vline"><span class="ln">78.4</span>No concede che altri li discerna.</p>
+<p class="vline"><span class="ln">78.5</span>Intorno tanto ben la gh’è adattada,</p>
+<p class="vline"><span class="ln">78.6</span>Che i ghe ne par vestii: bontà superna</p>
+<p class="vline"><span class="ln">78.7</span>Fava che da la nuvola stillasse</p>
+<p class="vline"><span class="ln">78.8</span>Laustra rosada, e che li imbalsamasse.</p>
+<p class="vline newstanza"><span class="ln">79.1</span>Padre Giove cusì dormiva quieto</p>
+<p class="vline"><span class="ln">79.2</span>Del Gargaro su l’alta sommità,</p>
+<p class="vline"><span class="ln">79.3</span>Nè el gera più patron del so intelletto</p>
+<p class="vline"><span class="ln">79.4</span>Dal grato sonno, e da l’amor domà;</p>
+<p class="vline"><span class="ln">79.5</span>El se tegniva fra le brazza stretto</p>
+<p class="vline"><span class="ln">79.6</span>De so mugier el corpo inzuccherà,</p>
+<p class="vline"><span class="ln">79.7</span>E intanto Sonno con gran pressa corre</p>
+<p class="vline"><span class="ln">79.8</span>A le nave de i greghi, e li soccorre.</p>
+</td>
+<td class="tus">
+<p class="vline"><span class="ln">51.1</span>Disse. L’abbraccia, e al suol la corca in fretta,</p>
+<p class="vline"><span class="ln">51.2</span>Mentre sott’essi Loto producea,</p>
+<p class="vline"><span class="ln">51.3</span>Giacinto, e Croco, ed ogni molle erbetta</p>
+<p class="vline"><span class="ln">51.4</span>La madre terra, ch’alto li reggea:</p>
+<p class="vline"><span class="ln">51.5</span>Giacquero ascosi, e dalla nube eletta</p>
+<p class="vline"><span class="ln">51.6</span>Bella rugiada sopar lor cadea;</p>
+<p class="vline"><span class="ln">51.7</span>Nè molto andò, che il Dio, non avvertito,</p>
+<p class="vline"><span class="ln">51.8</span>Da sonno, e da piacer giacque sopito.</p>
+</td>
+<td class="eng">
+<p class="vline"><span class="ln">393</span>Gazing he spoke, and kindling at the view,</p>
+<p class="vline"><span class="ln">394</span>His eager arms around the Goddess threw.</p>
+<p class="vline"><span class="ln">395</span>Glad earth perceives, and from her bosom pours</p>
+<p class="vline"><span class="ln">396</span>Unbidden herbs, and voluntary flow’rs;</p>
+<p class="vline"><span class="ln">397</span>Thick new-born vi’lets a soft carpet spread,</p>
+<p class="vline"><span class="ln">398</span>And clust’ring Lotos swell’d the rising bed,</p>
+<p class="vline"><span class="ln">399</span>And sudden hyacinths the turf bestrow,</p>
+<p class="vline"><span class="ln">400</span>And flamy Crocus made the mountain glow.</p>
+<p class="vline"><span class="ln">401</span>There golden clouds conceal the heav’nly pair,</p>
+<p class="vline"><span class="ln">402</span>Steep’d in soft joys, and circumfus’d with air;</p>
+<p class="vline"><span class="ln">403</span>Celestial dews, descending o’er the ground,</p>
+<p class="vline"><span class="ln">404</span>Perfume the mount, and breathe Ambrosia round.</p>
+<p class="vline"><span class="ln">405</span>At length with love and sleep’s soft pow’r opprest,</p>
+<p class="vline"><span class="ln">406</span>The panting Thund’rer nods, and sinks to rest.</p>
+</td>
+<td class="grc">
+<p class="vline"><span class="ln">346</span>Ἦ ῥα καὶ ἀγκὰς ἔμαρπτε Κρόνου παῖς ἣν παράκοιτιν·</p>
+<p class="vline"><span class="ln">347</span>τοῖσι δ’ ὑπὸ χθὼν δῖα φύεν νεοθηλέα ποίην,</p>
+<p class="vline"><span class="ln">348</span>λωτόν θ’ ἑρσήεντα ἰδὲ κρόκον ἠδ’ ὑάκινθον</p>
+<p class="vline"><span class="ln">349</span>πυκνὸν καὶ μαλακόν, ὃς ἀπὸ χθονὸς ὑψόσ’ ἔεργε.</p>
+<p class="vline"><span class="ln">350</span>τῷ ἔνι λεξάσθην, ἐπὶ δὲ νεφέλην ἕσσαντο</p>
+<p class="vline"><span class="ln">351</span>καλὴν χρυσείην· στιλπναὶ δ’ ἀπέπιπτον ἔερσαι.</p>
+<p class="vline"><span class="ln">352</span>Ὣς ὃ μὲν ἀτρέμας εὗδε πατὴρ ἀνὰ Γαργάρῳ ἄκρῳ,</p>
+<p class="vline"><span class="ln">353</span>ὕπνῳ καὶ φιλότητι δαμείς, ἔχε δ’ ἀγκὰς ἄκοιτιν·</p>
+</td>
+</tr></tbody>
+</table>
+</section>
+
+</main>
+<script>
+  (function () {
+    var steps = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.4, 1.6, 1.8, 2];
+    var current = steps.indexOf(1);
+    window.adjustZoom = function (dir) {
+      current = Math.min(steps.length - 1, Math.max(0, current + dir));
+      document.documentElement.style.setProperty('--fs', steps[current]);
+    };
+
+    window.toggleLayout = function () {
+      var seq = document.body.classList.toggle('seq-layout');
+      var btn = document.getElementById('layoutToggle');
+      btn.textContent = seq ? '☰' : '⊞';
+      btn.title = seq ? 'Switch to column layout' : 'Switch to sequential layout';
+    };
+  })();
+</script>
+</body>
+</html>
